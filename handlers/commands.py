@@ -23,20 +23,24 @@ async def help(message:Message):
 
 @router.message(F.text == '❤️❤️❤️')
 async def health_ecounter(message:Message):
+    global hp
     await message.answer(f"This is ur health 3 hearts = {hp}")
 
 @router.message(F.text == '⚡️⚡️⚡️')
 async def stamina_encounter(message:Message):
+    global stamina
     await message.answer(f"This is ur stamina 3 flashes = {stamina}")
 
 @router.message(F.text == 'Inventory')
 async def show_inventory(message:Message):
     await message.answer(f'This is ur inventory {inventory}', reply_markup= await KB.show_inventory())
 
-@router.message(F.text == 'drink_potion_haha')
+
+
+@router.callback_query(F.data == 'drink_potion_haha')
 async def drink_potion(message: Message):
     inventory_text = ', '.join(inventory)
-    await message.answer(f'Drank potion. HP increased to {hp}.\nInventory: {inventory_text}', reply_markup=await KB.drink_potion())
+    await message.answer(f'Drank potion. HP increased to {hp}.\nInventory: ', reply_markup=await KB.drink_potion())
 
 
 
