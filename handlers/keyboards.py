@@ -12,15 +12,62 @@ kb = ReplyKeyboardMarkup(keyboard=[
     ],
     resize_keyboard=True)
 
-async def drink_potion():
+async def show_inventory():
     inventoryy = inventory
     kb = InlineKeyboardBuilder()
     for _ in inventory:
         if _ == 'potion':
-            kb.add(InlineKeyboardButton(text = 'drink potion that heals 2 hp, 2hp = 1 heart', callback_data=f'drink_potion'))
+            kb.add(InlineKeyboardButton(text = 'Drink Potion (heals 2 HP)', callback_data=f'drink_potion_haha'))
+    kb.add(InlineKeyboardButton(text='Back', callback_data='back_1'))
     return kb.as_markup()
 
+async def drink_potion():
+    kb = InlineKeyboardBuilder()
+    kb.add(InlineKeyboardButton(text='haha'))
+    return kb.as_markup()
+
+
+
+# async def drink_potion():
+#     global hp
+#     hp += 2
+#     inventoryy = inventory
+#     kb = InlineKeyboardBuilder()
+#     kb.add(InlineKeyboardButton(text = 'back', callback_data=f'back_2'))
+#     for item in inventory:
+#         if item == 'potion':
+#             inventory.remove(item)
+#             break  # Assuming you only want to remove one potion per drink
+#     return kb.as_markup()
+
+
+
 # async def baryga():
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
