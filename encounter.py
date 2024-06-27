@@ -1,8 +1,6 @@
-hp = 6
-money = 10
+hp_encounter = 6
+money_encounter = 10
 stamina = 6
 dragon_hp = 10
 
-inventory = ['sword', 'chestplate','potion']
-
-
+inventory_123 = ['sword', 'chestplate','potion', money_encounter]

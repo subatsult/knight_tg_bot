@@ -1,11 +1,9 @@
 from aiogram import Router,F
-from aiogram.filters import Command,CommandStart
-from aiogram.types import Message,CallbackQuery,FSInputFile,ReplyKeyboardRemove, Message, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.filters import CommandStart
+from aiogram.types import Message,CallbackQuery, Message
 import handlers.keyboards as KB
-from contextlib import suppress
-from aiogram.exceptions import TelegramBadRequest
 router = Router()
-import logging
+import random
 from typing import Any, Dict
 from aiogram import types
 from handlers.keyboards import *
@@ -19,7 +17,7 @@ async def start(message:Message):
 
 @router.callback_query(F.data == 'city')
 async def go_to_city(query: CallbackQuery):
-    await query.message.answer('You have met a guy who is playing with crowd in a game of two cubes and they sporyat na money about chetnoe ili nechetnoe, wanna try?', reply_markup=await ludoman())
+    await query.message.answer('You have met a guy who is playing with crowd in a game of two cubes and they sporyat na money_encounter about chetnoe ili nechetnoe, wanna try?', reply_markup=await ludoman())
     await query.message.delete()
 
 @router.callback_query(F.data == 'krasaba')
@@ -32,38 +30,43 @@ async def play(query: CallbackQuery):
 
 @router.callback_query(F.data == 'shop')
 async def go_to_shop(query: CallbackQuery):
-    global money
-    await query.message.answer(f'You are in a shop, here u can buy potion, it costs 10$, you have {money}', reply_markup= await KB.baryga())
+    global money_encounter
+    await query.message.answer(f'You are in a shop, here u can buy potion, it costs 10$, you have {money_encounter}', reply_markup= await KB.baryga())
     await query.message.delete()
 
 @router.callback_query(lambda query: query.data in ['even', 'odd'])
 async def buy_potion(query: types.CallbackQuery):
-    global money
-    even_odd_dice()
-
-    if query.data == 'odd' and even_odd_dice() == 'odd':
-        money + 10
-        await query.message.answer('U have won, now is the time to stop and go shopping, wanna buy a potion', reply_markup= await KB.baryga())
-    elif query.data == 'even' and even_odd_dice() == 'even':
-        money + 10
-        await query.message.answer('U have won, now is the time to stop and go shopping, wanna buy a potion?', reply_markup= await KB.baryga())
+    global money_encounter
+    number = random.randint(2, 12)
+    if number % 2 != 0 and query.data == 'even':
+        money_encounter += 10
+        await query.message.answer(f'The number popped up is {number}, u have won, now is the time to stop and go shopping, wanna buy a potion', reply_markup= await KB.baryga())
+    elif number % 2 == 0 and query.data == 'odd':
+        money_encounter += 10
+        await query.message.answer(f'The number popped up is {number}, u have won, now is the time to stop and go shopping, wanna buy a potion?', reply_markup= await KB.baryga())
     else:
-        money - 10
-        await query.message.answer('Unlucky but i lost all ur money, so we gotta go defeat the dragon, wanna buy a potion?', reply_markup= await KB.baryga())
+        money_encounter -= 10
+        await query.message.answer(f'Unlucky but the number popped up is {number}, u lost all ur money_encounter, it was so we gotta go defeat the dragon, wanna buy a potion?', reply_markup= await KB.baryga())
     await query.message.delete()
+    
+
 
 @router.callback_query(lambda query: query.data in ['potion', 'potions'])
 async def buy_potion(query: types.CallbackQuery):
-    global money
+    global money_encounter
+    global inventory_123
     
-    if query.data == 'potion' and money >= 10:
-        money -= 10
+    if query.data == 'potion' and money_encounter >= 10:
+        money_encounter -= 10
+        inventory_123.append('potion')
         await query.message.answer('You have bought 1 potion.')
-    elif query.data == 'potions' and money >= 20:
-        money -= 20
+    elif query.data == 'potions' and money_encounter >= 20:
+        money_encounter -= 20
+        inventory_123.append('potion')
+        inventory_123.append('potion')
         await query.message.answer('You have bought 2 potions.')
     else:
-        await query.message.answer('Sorry, you do not have enough money.')
+        await query.message.answer('Sorry, you do not have enough money_encounter.')
     await query.message.answer('Now is the time to face the dragon', reply_markup= await KB.dragon())
     await query.message.delete()
 
@@ -71,13 +74,13 @@ async def buy_potion(query: types.CallbackQuery):
 async def attack_dragon(query: types.CallbackQuery):
     # await query.message.answer ('Ur hp is on the top of the keyboard',await KB.show_player_hp())
     global dragon_hp
-    global hp
+    global hp_encounter
 
     damage_dealt = 0
-    damage_taken = 2  # Player takes 2 HP damage each time they attack
+    damage_taken = 2  
     
-    hp -= damage_taken
-    if hp <=0: 
+    hp_encounter -= damage_taken
+    if hp_encounter <=0: 
         await query.message.answer('You died. Try again!', reply_markup= await KB.end())
     if query.data == 'head':
         damage_dealt = 2
@@ -88,9 +91,9 @@ async def attack_dragon(query: types.CallbackQuery):
     
     dragon_hp -= damage_dealt
     
-    # Check if dragon is defeated or continue battle
+
     if dragon_hp > 0:
-        await query.message.answer(f'You dealt {damage_dealt} damage to the dragon. Player HP: {hp}, Dragon HP: {dragon_hp}',
+        await query.message.answer(f'You dealt {damage_dealt} damage to the dragon. Player HP: {hp_encounter}, Dragon HP: {dragon_hp}',
                                    reply_markup=await dragon())
     else:
         await query.message.answer('Congratulations! You defeated the dragon!', reply_markup= await KB.end())
@@ -107,8 +110,16 @@ async def show_inventory1(message:Message):
 
 @router.callback_query(F.data == 'drink_potion')
 async def drink_potion_handler(query: CallbackQuery):
-    await query.answer(f'Drank potion. HP increased to {hp}.', reply_markup=await drink_potion())
+    global hp_encounter
+    if hp_encounter == 6:
+        pass
+    elif hp_encounter == 5:
+        hp_encounter +=1
+    elif hp_encounter <= 4:
+        hp_encounter += 2
+    await query.answer(f'Drank potion. HP increased to {hp_encounter}.', reply_markup=await drink_potion())
     await query.message.delete()
+    return hp_encounter
 
 
 

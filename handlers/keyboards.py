@@ -1,14 +1,11 @@
-from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton)
+from aiogram.types import (ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton)
 from aiogram.utils.keyboard import ReplyKeyboardBuilder,InlineKeyboardBuilder
-from aiogram.filters.callback_data import CallbackData
-from aiogram_widgets.pagination import KeyboardPaginator
 from encounter import *
-import random
 import handlers.keyboards as KB
 
 kb = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text='Inventory')]
-    ],
+    KeyboardButton(text='Inventory')]
+    ,
     resize_keyboard=True)
 
 async def show_inventory():
@@ -19,8 +16,8 @@ async def show_inventory():
     return kb.as_markup()
 
 async def drink_potion():
-    global hp
-    hp += 2
+    global hp_encounter
+    hp_encounter += 2
     inventory.remove('potion')
     return inventory
 
@@ -32,7 +29,7 @@ async def choice_start():
 
 async def ludoman():
     kb = InlineKeyboardBuilder()
-    kb.add(InlineKeyboardButton(text='Yes, I wanna try. (Money cost = 10)', callback_data='ludka'))
+    kb.add(InlineKeyboardButton(text='Yes, I wanna try. (money_encounter cost = 10)', callback_data='ludka'))
     kb.add(InlineKeyboardButton(text='No thanks', callback_data='krasaba'))
     return kb.adjust(2).as_markup()
 
@@ -42,23 +39,18 @@ async def igra():
     kb.add(InlineKeyboardButton(text='Odd', callback_data='odd'))
     return kb.adjust(2).as_markup()
 
-async def even_odd_dice():
-    number = random.randint(2, 12)
-    if number % 2 == 0:
-        return f"The number that came out is {number}. It's even."
-    else:
-        return f"The number that came out is {number}. It's odd."
+
     
 async def baryga():
-    global money
+    global money_encounter
     kb = InlineKeyboardBuilder()
     kb.add(InlineKeyboardButton(text='Yes, buy 1 potion', callback_data='potion'))
-    if money >= 20:
+    if money_encounter >= 20:
         kb.add(InlineKeyboardButton(text='Yes, buy 2 potions', callback_data='potions'))
     return kb.adjust(2).as_markup()  
 
 async def dragon():
-    global hp
+    global hp_encounter
     global dragon_hp
     wb = ReplyKeyboardBuilder()
     kb = InlineKeyboardBuilder()
@@ -68,9 +60,9 @@ async def dragon():
     return kb.adjust(3).as_markup()
 
 async def end():
-    global hp, money, stamina, dragon_hp, inventory
-    hp = 6
-    money = 10
+    global hp_encounter, money_encounter, stamina, dragon_hp, inventory
+    hp_encounter = 6
+    money_encounter = 10
     stamina = 6
     dragon_hp = 10
     return await KB.choice_start()
