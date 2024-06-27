@@ -22,10 +22,34 @@ async def go_to_city(query: CallbackQuery):
     await query.message.answer('You have met a guy who is playing with crowd in a game of two cubes and they sporyat na money about chetnoe ili nechetnoe, wanna try?', reply_markup=await ludoman())
     await query.message.delete()
 
+@router.callback_query(F.data == 'krasaba')
+async def no_play_go_shopping(query: CallbackQuery):
+    await query.message.answer('U denied invite for a game and now u r going into the shop for some potions', reply_markup= await KB.baryga())
+
+@router.callback_query(F.data == 'ludka')
+async def play(query: CallbackQuery):
+    await query.message.answer('Welcome to the Even and Odd game! Guess if the sum of two dice will be even or odd to win points.', reply_markup= await KB.igra())
+
 @router.callback_query(F.data == 'shop')
 async def go_to_shop(query: CallbackQuery):
     global money
     await query.message.answer(f'You are in a shop, here u can buy potion, it costs 10$, you have {money}', reply_markup= await KB.baryga())
+    await query.message.delete()
+
+@router.callback_query(lambda query: query.data in ['even', 'odd'])
+async def buy_potion(query: types.CallbackQuery):
+    global money
+    even_odd_dice()
+
+    if query.data == 'odd' and even_odd_dice() == 'odd':
+        money + 10
+        await query.message.answer('U have won, now is the time to stop and go shopping, wanna buy a potion', reply_markup= await KB.baryga())
+    elif query.data == 'even' and even_odd_dice() == 'even':
+        money + 10
+        await query.message.answer('U have won, now is the time to stop and go shopping, wanna buy a potion?', reply_markup= await KB.baryga())
+    else:
+        money - 10
+        await query.message.answer('Unlucky but i lost all ur money, so we gotta go defeat the dragon, wanna buy a potion?', reply_markup= await KB.baryga())
     await query.message.delete()
 
 @router.callback_query(lambda query: query.data in ['potion', 'potions'])

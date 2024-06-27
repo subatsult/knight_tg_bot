@@ -4,35 +4,7 @@ from aiogram.filters.callback_data import CallbackData
 from aiogram_widgets.pagination import KeyboardPaginator
 from encounter import *
 import random
-import json
-
-GAME_STATE_FILE = 'game_state.json'
-
-async def save_game_state():
-    game_state = {
-        'hp': hp,
-        'money': money,
-        'stamina': stamina,
-        'dragon_hp': dragon_hp,
-        'inventory': inventory
-    }
-    with open(GAME_STATE_FILE, 'w') as f:
-        json.dump(game_state, f)
-
-async def load_game_state():
-    global hp, money, stamina, dragon_hp, inventory
-    try:
-        with open(GAME_STATE_FILE, 'r') as f:
-            game_state = json.load(f)
-            hp = game_state['hp']
-            money = game_state['money']
-            stamina = game_state['stamina']
-            dragon_hp = game_state['dragon_hp']
-            inventory = game_state['inventory']
-    except FileNotFoundError:
-        # Handle initial state when the file doesn't exist
-        pass
-
+import handlers.keyboards as KB
 
 kb = ReplyKeyboardMarkup(keyboard=[
     [KeyboardButton(text='Inventory')]
@@ -64,6 +36,19 @@ async def ludoman():
     kb.add(InlineKeyboardButton(text='No thanks', callback_data='krasaba'))
     return kb.adjust(2).as_markup()
 
+async def igra():
+    kb = InlineKeyboardBuilder()
+    kb.add(InlineKeyboardButton(text='Even', callback_data='even'))
+    kb.add(InlineKeyboardButton(text='Odd', callback_data='odd'))
+    return kb.adjust(2).as_markup()
+
+async def even_odd_dice():
+    number = random.randint(2, 12)
+    if number % 2 == 0:
+        return f"The number that came out is {number}. It's even."
+    else:
+        return f"The number that came out is {number}. It's odd."
+    
 async def baryga():
     global money
     kb = InlineKeyboardBuilder()
@@ -88,8 +73,8 @@ async def end():
     money = 10
     stamina = 6
     dragon_hp = 10
-    save_game_state()
-    return save_game_state()
+    return await KB.choice_start()
+    
 
 # async def show_player_hp():
 #     buttons = []
