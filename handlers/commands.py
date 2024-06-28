@@ -39,13 +39,13 @@ async def buy_potion(query: types.CallbackQuery):
     global money_encounter
     number = random.randint(2, 12)
     if number % 2 != 0 and query.data == 'even':
-        money_encounter += 10
+        money_encounter = await append_money()
         await query.message.answer(f'The number popped up is {number}, u have won, now is the time to stop and go shopping, wanna buy a potion', reply_markup= await KB.baryga())
     elif number % 2 == 0 and query.data == 'odd':
-        money_encounter += 10
+        money_encounter = await append_money()
         await query.message.answer(f'The number popped up is {number}, u have won, now is the time to stop and go shopping, wanna buy a potion?', reply_markup= await KB.baryga())
     else:
-        money_encounter -= 10
+        money_encounter = await money_lose()
         await query.message.answer(f'Unlucky but the number popped up is {number}, u lost all ur money_encounter, it was so we gotta go defeat the dragon, wanna buy a potion?', reply_markup= await KB.baryga())
     await query.message.delete()
     
@@ -57,11 +57,12 @@ async def buy_potion(query: types.CallbackQuery):
     global inventory_123
     
     if query.data == 'potion' and money_encounter >= 10:
-        money_encounter -= 10
+        money_encounter = await money_lose()
         inventory_123.append('potion')
         await query.message.answer('You have bought 1 potion.')
     elif query.data == 'potions' and money_encounter >= 20:
-        money_encounter -= 20
+        money_encounter = await money_lose()
+        money_encounter = await money_lose()
         inventory_123.append('potion')
         inventory_123.append('potion')
         await query.message.answer('You have bought 2 potions.')
@@ -103,8 +104,9 @@ async def attack_dragon(query: types.CallbackQuery):
 
 @router.message(F.text == 'Inventory')
 async def show_inventory1(message:Message):
+    global money_encounter
     await message.delete()
-    await message.answer(f'This is ur inventory {inventory}', reply_markup= await KB.show_inventory())
+    await message.answer(f'This is ur inventory {inventory_123}, {money_encounter}', reply_markup= await KB.show_inventory())
 
 
 

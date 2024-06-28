@@ -4,13 +4,13 @@ from encounter import *
 import handlers.keyboards as KB
 
 kb = ReplyKeyboardMarkup(keyboard=[
-    KeyboardButton(text='Inventory')]
+    [KeyboardButton(text='Inventory')]]
     ,
     resize_keyboard=True)
 
 async def show_inventory():
     kb = InlineKeyboardBuilder()
-    for item in inventory:
+    for item in inventory_123:
         if item == 'potion':
             kb.add(InlineKeyboardButton(text='Drink Potion (heals 2 HP)', callback_data='drink_potion'))
     return kb.as_markup()
@@ -18,8 +18,8 @@ async def show_inventory():
 async def drink_potion():
     global hp_encounter
     hp_encounter += 2
-    inventory.remove('potion')
-    return inventory
+    inventory_123.remove('potion')
+    return inventory_123
 
 async def choice_start():
     kb = InlineKeyboardBuilder()
@@ -60,13 +60,24 @@ async def dragon():
     return kb.adjust(3).as_markup()
 
 async def end():
-    global hp_encounter, money_encounter, stamina, dragon_hp, inventory
+    global hp_encounter, money_encounter, stamina, dragon_hp, inventory_123
     hp_encounter = 6
     money_encounter = 10
     stamina = 6
     dragon_hp = 10
     return await KB.choice_start()
     
+async def append_money():
+    global money_encounter
+    money_win = 10
+    money_encounter += money_win
+    return money_encounter
+
+async def money_lose():
+    global money_encounter
+    money_lose = 10
+    money_encounter -= money_lose
+    return money_encounter
 
 # async def show_player_hp():
 #     buttons = []
