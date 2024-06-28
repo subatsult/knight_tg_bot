@@ -73,16 +73,15 @@ async def buy_potion(query: types.CallbackQuery):
 
 @router.callback_query(lambda query: query.data in ['head', 'body', 'legs'])
 async def attack_dragon(query: types.CallbackQuery):
-    # await query.message.answer ('Ur hp is on the top of the keyboard',await KB.show_player_hp())
     global dragon_hp
     global hp_encounter
 
     damage_dealt = 0
     damage_taken = 2  
-    
+    # await query.message.answer ('Ur hp is on the top of the keyboard',await KB.show_player_hp())
     hp_encounter -= damage_taken
     if hp_encounter <=0: 
-        await query.message.answer('You died. Try again!', reply_markup= await KB.end())
+        await query.message.answer('You died. Try again!', reply_markup= await KB.game_reset())
     if query.data == 'head':
         damage_dealt = 2
     elif query.data == 'body':
@@ -97,8 +96,7 @@ async def attack_dragon(query: types.CallbackQuery):
         await query.message.answer(f'You dealt {damage_dealt} damage to the dragon. Player HP: {hp_encounter}, Dragon HP: {dragon_hp}',
                                    reply_markup=await dragon())
     else:
-        await query.message.answer('Congratulations! You defeated the dragon!', reply_markup= await KB.end())
-    
+        await query.message.answer('Congratulations! You defeated the dragon!', reply_markup= await KB.game_reset())
     await query.message.delete()
 
 

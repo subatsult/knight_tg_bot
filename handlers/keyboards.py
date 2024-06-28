@@ -4,8 +4,7 @@ from encounter import *
 import handlers.keyboards as KB
 
 kb = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text='Inventory')]]
-    ,
+    [KeyboardButton(text='Inventory')]],
     resize_keyboard=True)
 
 async def show_inventory():
@@ -59,13 +58,6 @@ async def dragon():
     kb.add(InlineKeyboardButton(text='Hit his nogi', callback_data='legs'))
     return kb.adjust(3).as_markup()
 
-async def end():
-    global hp_encounter, money_encounter, stamina, dragon_hp, inventory_123
-    hp_encounter = 6
-    money_encounter = 10
-    stamina = 6
-    dragon_hp = 10
-    return await KB.choice_start()
     
 async def append_money():
     global money_encounter
@@ -82,17 +74,17 @@ async def money_lose():
 # async def show_player_hp():
 #     buttons = []
     
-#     if hp >= 6:
+#     if hp_encounter >= 6:
 #         buttons.append(KeyboardButton(text='❤️❤️❤️❤️❤️❤️'))
-#     elif hp >= 5:
+#     elif hp_encounter >= 5:
 #         buttons.append(KeyboardButton(text='❤️❤️❤️❤️❤️'))
-#     elif hp >= 4:
+#     elif hp_encounter >= 4:
 #         buttons.append(KeyboardButton(text='❤️❤️❤️❤️'))
-#     elif hp >= 3:
+#     elif hp_encounter >= 3:
 #         buttons.append(KeyboardButton(text='❤️❤️❤️'))
-#     elif hp >= 2:
+#     elif hp_encounter >= 2:
 #         buttons.append(KeyboardButton(text='❤️❤️'))
-#     elif hp >= 1:
+#     elif hp_encounter >= 1:
 #         buttons.append(KeyboardButton(text='❤️'))
     
 #     kb = ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
@@ -100,3 +92,30 @@ async def money_lose():
 
 
 
+async def hp_encounter_reset():
+    global hp_encounter
+    hp_encounter = 6
+    return hp_encounter
+
+async def money_encounter_reset():
+    global money_encounter
+    money_encounter = 10
+    return money_encounter
+
+async def dragon_hp_reset():
+    global dragon_hp
+    dragon_hp = 10
+    return dragon_hp
+
+async def inventory_reset():
+    global inventory_123
+    inventory_123 = ['sword', 'chestplate','potion']
+    return inventory_123
+
+async def game_reset():
+    global hp_encounter, money_encounter, dragon_hp, inventory_123
+    hp_encounter = await hp_encounter_reset()
+    money_encounter = await money_encounter_reset()
+    dragon_hp = await dragon_hp_reset()
+    inventory_123 = await inventory_reset()
+    return await KB.choice_start()
